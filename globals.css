@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { background: #18181B; margin: 0; padding: 0; }
+input, textarea { font-family: inherit; }
+::-webkit-scrollbar { display: none; }
