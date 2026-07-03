@@ -557,6 +557,7 @@ function CardioPostTreino({ regKey, regHoje, salvarRegistro, ex, checkin, inicia
   const [extraindo, setExtraindo] = useState(false);
   const [erroFoto, setErroFoto] = useState('');
   const [fotoUrl, setFotoUrl] = useState(null);
+  const [salvoOk, setSalvoOk] = useState(false);
   const inputFotoRef = useRef(null);
 
   const salvarCardio = (novoTipo, novosDados) => {
@@ -564,6 +565,8 @@ function CardioPostTreino({ regKey, regHoje, salvarRegistro, ex, checkin, inicia
       exercicios: ex, checkin, horaInicio: iniciado, diaKey, concluido,
       duracaoMin, cardio: { tipo: novoTipo ?? tipo, dados: novosDados ?? dados }
     });
+    setSalvoOk(true);
+    setTimeout(() => setSalvoOk(false), 2000);
   };
 
   const atualizarDado = (campo, valor) => {
@@ -646,8 +649,16 @@ function CardioPostTreino({ regKey, regHoje, salvarRegistro, ex, checkin, inicia
           <span style={{ fontSize: 18 }}>🏃</span>
           <p style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>Cardio pós-treino</p>
         </div>
-        <button onClick={() => { setAberto(false); salvarCardio('', {}); }}
-          style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {salvoOk && (
+            <span style={{ fontSize: 11, color: C.accent, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke={C.accent} strokeWidth="2" strokeLinecap="round"/></svg>
+              Salvo
+            </span>
+          )}
+          <button onClick={() => { setAberto(false); salvarCardio('', {}); }}
+            style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
+        </div>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
         {[{ id: 'esteira', label: '🏃 Esteira comum' }, { id: 'shape', label: '⚡ Shape Space' }].map(t => (
@@ -783,14 +794,18 @@ function TelaHistorico({ historicoTreinos }) {
             <p style={{ fontSize: 10, color: C.muted, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Cardio — {t.cardio.tipo === 'shape' ? '⚡ Shape Space' : '🏃 Esteira comum'}
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {Object.entries(t.cardio.dados || {}).map(([k, v]) => (
-                <div key={k}>
-                  <p style={{ fontSize: 9, color: C.muted, margin: '0 0 2px', textTransform: 'uppercase' }}>{k.replace(/_/g,' ')}</p>
-                  <p style={{ fontSize: 15, fontWeight: 700, margin: 0, color: C.blue }}>{v}</p>
-                </div>
-              ))}
-            </div>
+            {t.cardio.dados && Object.keys(t.cardio.dados).length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {Object.entries(t.cardio.dados).map(([k, v]) => (
+                  <div key={k} style={{ background: C.card2, borderRadius: 10, padding: '10px 12px' }}>
+                    <p style={{ fontSize: 9, color: C.muted, margin: '0 0 3px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{k.replace(/_/g,' ')}</p>
+                    <p style={{ fontSize: 16, fontWeight: 700, margin: 0, color: C.blue }}>{v}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: 12, color: C.muted2, margin: 0 }}>Sem dados registrados.</p>
+            )}
           </div>
         )}
       </div>
