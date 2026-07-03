@@ -659,7 +659,7 @@ function CardioPostTreino({ regKey, regHoje, salvarRegistro, ex, checkin, inicia
       </div>
       {tipo && (
         <>
-          <input ref={inputFotoRef} type="file" accept="image/*" capture="environment"
+          <input ref={inputFotoRef} type="file" accept="image/*"
             onChange={e => processarFoto(e.target.files[0])} style={{ display: 'none' }} />
           <button onClick={() => inputFotoRef.current?.click()} disabled={extraindo}
             style={{ width: '100%', background: extraindo ? C.card2 : 'rgba(88,196,246,0.1)', border: `1px solid ${extraindo ? C.border : C.blue}`, borderRadius: 10, padding: '12px', color: extraindo ? C.muted : C.blue, fontSize: 13, fontWeight: 700, cursor: extraindo ? 'default' : 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
