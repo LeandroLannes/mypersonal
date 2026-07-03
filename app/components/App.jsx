@@ -263,7 +263,9 @@ export default function App() {
   const diaKey = getDiaKey();
   const treino = SPLIT[diaKey];
   const regKey = `reg:${hoje}`;
-  const regHoje = registros[regKey] || {};
+  // Garante que só usa o registro se for exatamente de hoje
+  const regRaw = registros[regKey] || {};
+  const regHoje = regRaw;
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', color: C.text, maxWidth: 430, margin: '0 auto', position: 'relative', paddingBottom: 80 }}>
@@ -315,9 +317,16 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, salvarRegistro, iniciarTime
   const [checkin, setCheckin] = useState(regHoje.checkin || { sono: '', fc: '', energia: 0, dor: '', dorLocal: '' });
   const [pesoInput, setPesoInput] = useState(() => pesoHist.find(r => r.data === dateKey())?.peso || '');
   const [iniciado] = useState(() => regHoje.horaInicio || new Date().toISOString());
-  const [concluido, setConcluido] = useState(() => {
-    return !!regHoje.concluido && regHoje.data === dateKey();
-  });
+  const [concluido, setConcluido] = useState(false);
+
+  // Atualiza concluido quando os dados do Supabase chegarem
+  useEffect(() => {
+    if (regHoje.concluido && regHoje.data === dateKey()) {
+      setConcluido(true);
+    } else {
+      setConcluido(false);
+    }
+  }, [regHoje.concluido, regHoje.data]);
 
   useEffect(() => {
     if (!regHoje.horaInicio) {
@@ -1125,7 +1134,6 @@ function TelaCiclo({ registros, setAba, historicoTreinos }) {
     const isPast = dataDia < dateKey();
 
     if (isPast) {
-      // Verifica se tem treino no histórico
       const temHistorico = historicoTreinos.some(t => t.data === dataDia);
       if (temHistorico) {
         setAba('historico');
@@ -1190,7 +1198,6 @@ function TelaCiclo({ registros, setAba, historicoTreinos }) {
                   background: ehHoje ? C.accentDim : 'transparent',
                   borderRadius: ehHoje ? 8 : 0,
                   cursor: ehHoje ? 'default' : 'pointer',
-                  opacity: isPast && !temHistorico ? 0.5 : 1,
                 }}>
                 <span style={{ fontSize: 12, color: C.muted, width: 30 }}>{DIAS_LABEL[dia]}</span>
                 <span style={{ fontSize: 13, fontWeight: 800, color: t.cor, width: 28 }}>{t.nome}</span>
@@ -1201,16 +1208,16 @@ function TelaCiclo({ registros, setAba, historicoTreinos }) {
                     ver <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
                   </span>
                 )}
-                {isFuture && (
+                {!ehHoje && !temHistorico && (
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.muted2} strokeWidth="2"
-                    style={{ transform: aberto ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    style={{ transform: aberto ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
                     <polyline points="6 9 12 15 18 9"/>
                   </svg>
                 )}
               </div>
 
               {/* Preview do treino */}
-              {aberto && isFuture && (
+              {aberto && !temHistorico && (
                 <div style={{ background: C.card2, borderRadius: '0 0 10px 10px', padding: '10px 14px', marginBottom: 2 }}>
                   <p style={{ fontSize: 10, color: t.cor, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>{t.nome} — {t.titulo}</p>
                   {t.exercicios.map((ex, i) => (
