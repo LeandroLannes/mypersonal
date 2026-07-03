@@ -151,7 +151,19 @@ export default function App() {
         const { data: regs } = await supabase.from('registros').select('*');
         if (regs) {
           const mapa = {};
-          regs.forEach(r => { mapa[`reg:${r.data}`] = { ...r.exercicios, exercicios: r.exercicios, checkin: r.checkin, cardio: r.cardio, horaInicio: r.hora_inicio, horaFim: r.hora_fim, duracaoMin: r.duracao_min, concluido: r.concluido, diaKey: r.dia_key }; });
+          regs.forEach(r => {
+            mapa[`reg:${r.data}`] = {
+              exercicios: r.exercicios || {},
+              checkin: r.checkin || {},
+              cardio: r.cardio || {},
+              horaInicio: r.hora_inicio,
+              horaFim: r.hora_fim,
+              duracaoMin: r.duracao_min,
+              concluido: r.concluido,
+              diaKey: r.dia_key,
+              data: r.data,
+            };
+          });
           setRegistros(mapa);
           setHistoricoTreinos(regs.filter(r => r.concluido).sort((a,b) => b.data.localeCompare(a.data)));
         }
@@ -303,7 +315,9 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, salvarRegistro, iniciarTime
   const [checkin, setCheckin] = useState(regHoje.checkin || { sono: '', fc: '', energia: 0, dor: '', dorLocal: '' });
   const [pesoInput, setPesoInput] = useState(() => pesoHist.find(r => r.data === dateKey())?.peso || '');
   const [iniciado] = useState(() => regHoje.horaInicio || new Date().toISOString());
-  const [concluido, setConcluido] = useState(!!regHoje.concluido);
+  const [concluido, setConcluido] = useState(() => {
+    return !!regHoje.concluido && regHoje.data === dateKey();
+  });
 
   useEffect(() => {
     if (!regHoje.horaInicio) {
