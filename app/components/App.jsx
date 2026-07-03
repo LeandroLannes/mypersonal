@@ -271,7 +271,7 @@ export default function App() {
       {aba === 'corpo'     && <TelaCorpo pesoHist={pesoHist} salvarPeso={salvarPeso} />}
       {aba === 'progresso' && <TelaProgresso registros={registros} />}
       {aba === 'historico' && <TelaHistorico historicoTreinos={historicoTreinos} />}
-      {aba === 'ciclo'     && <TelaCiclo registros={registros} />}
+      {aba === 'ciclo'     && <TelaCiclo registros={registros} setAba={setAba} historicoTreinos={historicoTreinos} />}
       <Nav aba={aba} setAba={setAba} setAiOpen={setAiOpen} />
       {timer && <TimerFlutuante timer={timer} fechar={fecharTimer} />}
       {aiOpen && <AiConsulta registros={registros} pesoHist={pesoHist} fechar={() => setAiOpen(false)} />}
@@ -1080,11 +1080,12 @@ function TelaProgresso({ registros }) {
 }
 
 // ─── TELA CICLO ──────────────────────────────────────────────────
-function TelaCiclo({ registros }) {
+function TelaCiclo({ registros, setAba, historicoTreinos }) {
   const semana = semanaAtual();
   const pct = Math.min(100, Math.round((semana / CICLO_SEMANAS) * 100));
   const r = 54; const circ = 2 * Math.PI * r;
   const entradas = Object.entries(registros);
+  const [previewDia, setPreviewDia] = useState(null);
 
   const estagnados = [];
   COMPOSTOS.forEach(exId => {
@@ -1103,6 +1104,38 @@ function TelaCiclo({ registros }) {
 
   const motivosForte = [semana >= CICLO_SEMANAS - 1, estagnados.length >= 2, estagnados.some(e => e.rirZero >= 2)].filter(Boolean).length;
   const trocar = motivosForte >= 2;
+
+  // Descobre qual data corresponde a cada dia da semana
+  const hoje = new Date();
+  const diaHojeIdx = hoje.getDay(); // 0=dom
+
+  const getDatasemana = (diaKey) => {
+    const idx = DIAS_KEY.indexOf(diaKey);
+    const diff = idx - diaHojeIdx;
+    const d = new Date(hoje);
+    d.setDate(d.getDate() + diff);
+    return d.toISOString().split('T')[0];
+  };
+
+  const handleDiaClick = (dia) => {
+    const ehHoje = getDiaKey() === dia;
+    if (ehHoje) return;
+
+    const dataDia = getDatasemana(dia);
+    const isPast = dataDia < dateKey();
+
+    if (isPast) {
+      // Verifica se tem treino no histórico
+      const temHistorico = historicoTreinos.some(t => t.data === dataDia);
+      if (temHistorico) {
+        setAba('historico');
+        return;
+      }
+    }
+
+    // Futuro ou passado sem histórico — mostra preview
+    setPreviewDia(previewDia === dia ? null : dia);
+  };
 
   return (
     <div style={{ padding: '24px 20px 0' }}>
@@ -1141,12 +1174,53 @@ function TelaCiclo({ registros }) {
         {DIAS_KEY.map(dia => {
           const t = SPLIT[dia];
           const ehHoje = getDiaKey() === dia;
+          const dataDia = getDatasemana(dia);
+          const isPast = dataDia < dateKey();
+          const temHistorico = isPast && historicoTreinos.some(h => h.data === dataDia);
+          const isFuture = dataDia > dateKey();
+          const aberto = previewDia === dia;
+
           return (
-            <div key={dia} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px', borderBottom: `1px solid ${C.border}`, background: ehHoje ? C.accentDim : 'transparent', borderRadius: ehHoje ? 8 : 0 }}>
-              <span style={{ fontSize: 12, color: C.muted, width: 30 }}>{DIAS_LABEL[dia]}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: t.cor, width: 28 }}>{t.nome}</span>
-              <span style={{ fontSize: 13, color: ehHoje ? C.text : C.muted }}>{t.titulo}</span>
-              {ehHoje && <span style={{ marginLeft: 'auto', fontSize: 10, color: C.accent, fontWeight: 700 }}>hoje</span>}
+            <div key={dia}>
+              <div
+                onClick={() => handleDiaClick(dia)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '11px 10px',
+                  borderBottom: `1px solid ${C.border}`,
+                  background: ehHoje ? C.accentDim : 'transparent',
+                  borderRadius: ehHoje ? 8 : 0,
+                  cursor: ehHoje ? 'default' : 'pointer',
+                  opacity: isPast && !temHistorico ? 0.5 : 1,
+                }}>
+                <span style={{ fontSize: 12, color: C.muted, width: 30 }}>{DIAS_LABEL[dia]}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: t.cor, width: 28 }}>{t.nome}</span>
+                <span style={{ fontSize: 13, color: ehHoje ? C.text : C.muted, flex: 1 }}>{t.titulo}</span>
+                {ehHoje && <span style={{ fontSize: 10, color: C.accent, fontWeight: 700 }}>hoje</span>}
+                {temHistorico && !ehHoje && (
+                  <span style={{ fontSize: 10, color: C.blue, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 3 }}>
+                    ver <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </span>
+                )}
+                {isFuture && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.muted2} strokeWidth="2"
+                    style={{ transform: aberto ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                )}
+              </div>
+
+              {/* Preview do treino */}
+              {aberto && isFuture && (
+                <div style={{ background: C.card2, borderRadius: '0 0 10px 10px', padding: '10px 14px', marginBottom: 2 }}>
+                  <p style={{ fontSize: 10, color: t.cor, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>{t.nome} — {t.titulo}</p>
+                  {t.exercicios.map((ex, i) => (
+                    <div key={ex.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.border}` }}>
+                      <span style={{ fontSize: 12, color: ex.principal ? C.text : C.muted }}>{i+1}. {ex.nome}</span>
+                      <span style={{ fontSize: 11, color: C.muted2 }}>{ex.series}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
