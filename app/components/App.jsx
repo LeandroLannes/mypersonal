@@ -263,9 +263,9 @@ export default function App() {
   const diaKey = getDiaKey();
   const treino = SPLIT[diaKey];
   const regKey = `reg:${hoje}`;
-  // Garante que só usa o registro se for exatamente de hoje
+  // Só usa o registro se a data bater exatamente com hoje
   const regRaw = registros[regKey] || {};
-  const regHoje = regRaw;
+  const regHoje = regRaw.data === hoje ? regRaw : {};
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', color: C.text, maxWidth: 430, margin: '0 auto', position: 'relative', paddingBottom: 80 }}>
