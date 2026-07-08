@@ -16,7 +16,7 @@ export async function POST(request) {
       }),
     });
     const data = await response.json();
-    return Response.json(data);
+    return Response.json(data, { status: response.status });
   } catch (err) {
     return Response.json({ error: String(err) }, { status: 500 });
   }
