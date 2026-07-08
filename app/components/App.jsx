@@ -137,6 +137,20 @@ const getDiaKey = (d = new Date()) => DIAS_KEY[d.getDay()];
 const semanaAtual = () => Math.max(1, Math.floor((new Date() - CICLO_INICIO) / (7 * 864e5)) + 1);
 const parseNum = (s) => { const m = String(s||'').replace('+','').match(/-?\d+(\.\d+)?/); return m ? +m[0] : null; };
 
+// Busca o último registro salvo (com carga preenchida) de um exercício, olhando
+// para trás no objeto `registros` (chaves "reg:YYYY-MM-DD"), ignorando o dia de hoje.
+const buscarUltimoRegistro = (exId, registros, hojeStr) => {
+  const chaves = Object.keys(registros || {})
+    .filter(k => k.startsWith('reg:') && k !== `reg:${hojeStr}`)
+    .sort()
+    .reverse();
+  for (const k of chaves) {
+    const dados = registros[k]?.exercicios?.[exId];
+    if (dados && dados.carga) return dados;
+  }
+  return null;
+};
+
 // ─── APP ────────────────────────────────────────────────────────
 export default function App() {
   const [aba, setAba] = useState('hoje');
@@ -277,7 +291,7 @@ export default function App() {
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', color: C.text, maxWidth: 430, margin: '0 auto', position: 'relative', paddingBottom: 80 }}>
-      {aba === 'hoje'      && <TelaHoje treino={treino} diaKey={diaKey} regKey={regKey} regHoje={regHoje} salvarRegistro={salvarRegistro} iniciarTimer={iniciarTimer} pesoHist={pesoHist} salvarPeso={salvarPeso} />}
+      {aba === 'hoje'      && <TelaHoje treino={treino} diaKey={diaKey} regKey={regKey} regHoje={regHoje} registros={registros} salvarRegistro={salvarRegistro} iniciarTimer={iniciarTimer} pesoHist={pesoHist} salvarPeso={salvarPeso} />}
       {aba === 'corpo'     && <TelaCorpo pesoHist={pesoHist} salvarPeso={salvarPeso} />}
       {aba === 'progresso' && <TelaProgresso registros={registros} />}
       {aba === 'historico' && <TelaHistorico historicoTreinos={historicoTreinos} />}
@@ -319,9 +333,30 @@ function Nav({ aba, setAba, setAiOpen }) {
 }
 
 // ─── TELA HOJE ──────────────────────────────────────────────────
-function TelaHoje({ treino, diaKey, regKey, regHoje, salvarRegistro, iniciarTimer, pesoHist, salvarPeso }) {
+function TelaHoje({ treino, diaKey, regKey, regHoje, registros, salvarRegistro, iniciarTimer, pesoHist, salvarPeso }) {
   const [expandido, setExpandido] = useState(null);
-  const [ex, setEx] = useState(regHoje.exercicios || {});
+
+  // Estado inicial dos exercícios: se já existe registro de hoje (carga preenchida
+  // ou marcado como feito), usa ele. Caso contrário, pré-preenche com o último
+  // valor registrado (carga/RIR/reps) desse exercício em qualquer treino anterior.
+  const [ex, setEx] = useState(() => {
+    const base = regHoje.exercicios || {};
+    const hojeStr = dateKey();
+    const inicial = {};
+    treino.exercicios.forEach(e => {
+      const jaTemDados = base[e.id] && (base[e.id].carga || base[e.id].feito);
+      if (jaTemDados) {
+        inicial[e.id] = base[e.id];
+      } else {
+        const ultimo = buscarUltimoRegistro(e.id, registros, hojeStr);
+        inicial[e.id] = ultimo
+          ? { carga: ultimo.carga || '', rir: ultimo.rir || '', reps: ultimo.reps || '', feito: base[e.id]?.feito || false }
+          : (base[e.id] || {});
+      }
+    });
+    return inicial;
+  });
+
   const [checkin, setCheckin] = useState(regHoje.checkin || { sono: '', fc: '', energia: 0, dor: '', dorLocal: '' });
   const [pesoInput, setPesoInput] = useState(() => pesoHist.find(r => r.data === dateKey())?.peso || '');
   const [iniciado] = useState(() => regHoje.horaInicio || new Date().toISOString());
@@ -621,6 +656,11 @@ function CardioPostTreino({ regKey, regHoje, salvarRegistro, ex, checkin, inicia
         })
       });
       const data = await res.json();
+      if (!res.ok) {
+        const detalhe = data?.error?.message || data?.error || `status ${res.status}`;
+        setErroFoto(`Erro ao ler a foto: ${detalhe}`);
+        return;
+      }
       const texto = data.content?.map(c => c.text || '').join('') || '';
       const extraido = JSON.parse(texto.replace(/```json|```/g, '').trim());
       const novosDados = {};
@@ -1280,10 +1320,22 @@ Contexto do atleta:
         body: JSON.stringify({ system, messages: [...history, { role: 'user', content: userMsg }] }),
       });
       const data = await res.json();
-      const texto = data.content?.map(c => c.text || '').join('') || 'Erro ao obter resposta.';
+
+      if (!res.ok) {
+        // Mostra o erro de verdade em vez de uma mensagem genérica, pra facilitar diagnóstico
+        const detalhe = data?.error?.message || data?.error || `status ${res.status}`;
+        setMsgs(p => [...p, { role: 'assistant', content: `⚠️ Erro (${res.status}): ${detalhe}` }]);
+        return;
+      }
+
+      const texto = data.content?.map(c => c.text || '').join('');
+      if (!texto) {
+        setMsgs(p => [...p, { role: 'assistant', content: '⚠️ A API respondeu, mas sem conteúdo de texto. Verifique os logs do Render.' }]);
+        return;
+      }
       setMsgs(p => [...p, { role: 'assistant', content: texto }]);
-    } catch {
-      setMsgs(p => [...p, { role: 'assistant', content: 'Erro de conexão. Tente novamente.' }]);
+    } catch (err) {
+      setMsgs(p => [...p, { role: 'assistant', content: `⚠️ Erro de conexão: ${err.message}` }]);
     } finally { setLoading(false); }
   };
 
