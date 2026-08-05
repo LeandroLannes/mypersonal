@@ -18,7 +18,7 @@ const SPLIT = {
       { id: 'belt_squat', nome: 'Belt squat', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: true },
       { id: 'agach_smith', nome: 'Agachamento no Smith', series: '3x8-10', rir: '2/1/1', descanso: '2min', principal: false },
       { id: 'extensora_a1', nome: 'Cadeira extensora', series: '3x8-10', rir: '2/1/0-1', descanso: '90s', principal: false },
-      { id: 'afundo_smith_a1', nome: 'Afundo no Smith', series: '3x8-10/perna', rir: '2/1/1', descanso: '90-120s', principal: false },
+      { id: 'leg_press_45_unilat_a1', nome: 'Leg press 45° unilateral', series: '3x8-10/perna', rir: '2/1/1', descanso: '90-120s', principal: false },
       { id: 'mesa_flexora_a1', nome: 'Mesa flexora', series: '3x8-10', rir: '2/1/0-1', descanso: '90s', principal: false },
       { id: 'pant_pe_a1', nome: 'Panturrilha em pé', series: '4x8-10', rir: '2/1/1/0-1', descanso: '90s', principal: false },
       { id: 'pant_sentada_a1', nome: 'Panturrilha sentada', series: '3x10-12', rir: '2/1/0-1', descanso: '60-90s', principal: false },
@@ -349,9 +349,14 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, registros, salvarRegistro, 
         inicial[e.id] = base[e.id];
       } else {
         const ultimo = buscarUltimoRegistro(e.id, registros, hojeStr);
-        inicial[e.id] = ultimo
-          ? { carga: ultimo.carga || '', rir: ultimo.rir || '', reps: ultimo.reps || '', feito: base[e.id]?.feito || false }
-          : (base[e.id] || {});
+        if (ultimo) {
+          inicial[e.id] = { carga: ultimo.carga || '', rir: ultimo.rir || '', reps: ultimo.reps || '', feito: base[e.id]?.feito || false };
+        } else if (e.id === 'leg_press_45_unilat_a1') {
+          // Exercício novo, sem histórico ainda — começa com carga inicial sugerida
+          inicial[e.id] = { carga: '40/40', rir: '', reps: '', feito: base[e.id]?.feito || false };
+        } else {
+          inicial[e.id] = base[e.id] || {};
+        }
       }
     });
     return inicial;
