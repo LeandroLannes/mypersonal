@@ -156,6 +156,7 @@ export default function App() {
   const [aba, setAba] = useState('hoje');
   const [registros, setRegistros] = useState({});
   const [pesoHist, setPesoHist] = useState([]);
+  const [refeicoes, setRefeicoes] = useState({}); // { 'YYYY-MM-DD': [refeicao, ...] }
   const [historicoTreinos, setHistoricoTreinos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [aiOpen, setAiOpen] = useState(false);
@@ -189,6 +190,23 @@ export default function App() {
           setRegistros(mapa);
           setHistoricoTreinos(regs.filter(r => r.concluido).sort((a,b) => b.data.localeCompare(a.data)));
         }
+
+        // Carregar refeições (últimos 30 dias)
+        try {
+          const desde = new Date();
+          desde.setDate(desde.getDate() - 30);
+          const { data: refs } = await supabase.from('refeicoes').select('*')
+            .gte('data', dateKey(desde)).order('hora', { ascending: true });
+          if (refs) {
+            const mapaRef = {};
+            refs.forEach(r => {
+              const d = String(r.data).slice(0, 10);
+              if (!mapaRef[d]) mapaRef[d] = [];
+              mapaRef[d].push(r);
+            });
+            setRefeicoes(mapaRef);
+          }
+        } catch (e) { console.error('Erro ao carregar refeições:', e); }
 
         // Carregar histórico de peso
         const { data: pesos } = await supabase.from('peso_historico').select('*').order('data', { ascending: true });
@@ -235,6 +253,25 @@ export default function App() {
       const { data: pesos } = await supabase.from('peso_historico').select('*').order('data', { ascending: true });
       if (pesos) setPesoHist(pesos);
     } catch (e) { console.error('Erro ao salvar peso:', e); }
+  }, []);
+
+  const salvarRefeicao = useCallback(async (refeicao) => {
+    try {
+      const { data: inserida, error } = await supabase.from('refeicoes').insert(refeicao).select().single();
+      if (error) throw error;
+      setRefeicoes(p => {
+        const d = refeicao.data;
+        const lista = [...(p[d] || []), inserida];
+        return { ...p, [d]: lista };
+      });
+    } catch (e) { console.error('Erro ao salvar refeição:', e); }
+  }, []);
+
+  const deletarRefeicao = useCallback(async (id, data) => {
+    try {
+      await supabase.from('refeicoes').delete().eq('id', id);
+      setRefeicoes(p => ({ ...p, [data]: (p[data] || []).filter(r => r.id !== id) }));
+    } catch (e) { console.error('Erro ao deletar refeição:', e); }
   }, []);
 
   const iniciarTimer = useCallback((segundos) => {
@@ -292,7 +329,7 @@ export default function App() {
   return (
     <div style={{ background: C.bg, minHeight: '100vh', fontFamily: 'Inter, system-ui, sans-serif', color: C.text, maxWidth: 430, margin: '0 auto', position: 'relative', paddingBottom: 80 }}>
       {aba === 'hoje'      && <TelaHoje treino={treino} diaKey={diaKey} regKey={regKey} regHoje={regHoje} registros={registros} salvarRegistro={salvarRegistro} iniciarTimer={iniciarTimer} pesoHist={pesoHist} salvarPeso={salvarPeso} />}
-      {aba === 'corpo'     && <TelaCorpo pesoHist={pesoHist} salvarPeso={salvarPeso} />}
+      {aba === 'corpo'     && <TelaCorpo pesoHist={pesoHist} salvarPeso={salvarPeso} refeicoesHoje={refeicoes[dateKey()] || []} salvarRefeicao={salvarRefeicao} deletarRefeicao={deletarRefeicao} />}
       {aba === 'progresso' && <TelaProgresso registros={registros} />}
       {aba === 'historico' && <TelaHistorico historicoTreinos={historicoTreinos} />}
       {aba === 'ciclo'     && <TelaCiclo registros={registros} setAba={setAba} historicoTreinos={historicoTreinos} />}
@@ -916,7 +953,7 @@ function TelaHistorico({ historicoTreinos }) {
 }
 
 // ─── TELA CORPO ──────────────────────────────────────────────────
-function TelaCorpo({ pesoHist, salvarPeso }) {
+function TelaCorpo({ pesoHist, salvarPeso, refeicoesHoje, salvarRefeicao, deletarRefeicao }) {
   const [novoPeso, setNovoPeso] = useState('');
   const [novaGordura, setNovaGordura] = useState('');
   const [novaMuscular, setNovaMuscular] = useState('');
@@ -1036,6 +1073,320 @@ function TelaCorpo({ pesoHist, salvarPeso }) {
         <p style={{ fontSize: 12, color: C.orange, margin: 0, lineHeight: 1.5 }}>
           <strong>Referência InBody:</strong> a medição profissional mensal é mais precisa que a balança doméstica. Os dados do InBody são a referência principal para acompanhamento do ciclo.
         </p>
+      </div>
+
+      <SecaoNutricao refeicoesHoje={refeicoesHoje} salvarRefeicao={salvarRefeicao} deletarRefeicao={deletarRefeicao} />
+    </div>
+  );
+}
+
+// ─── SEÇÃO NUTRIÇÃO (dentro da tela Corpo) ───────────────────────
+function SecaoNutricao({ refeicoesHoje, salvarRefeicao, deletarRefeicao }) {
+  const [abrindo, setAbrindo] = useState(false);
+
+  const totalDia = refeicoesHoje.reduce((acc, r) => ({
+    kcal: acc.kcal + (r.kcal_total || 0),
+    proteina: acc.proteina + (r.proteina_total || 0),
+    carboidrato: acc.carboidrato + (r.carboidrato_total || 0),
+    gordura: acc.gordura + (r.gordura_total || 0),
+  }), { kcal: 0, proteina: 0, carboidrato: 0, gordura: 0 });
+
+  return (
+    <div style={{ marginTop: 8, marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <p style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.muted, margin: 0 }}>Nutrição de hoje</p>
+        <button onClick={() => setAbrindo(true)}
+          style={{ background: C.accentDim, border: `1px solid rgba(200,241,53,0.3)`, borderRadius: 8, padding: '6px 12px', color: C.accent, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+          + Refeição
+        </button>
+      </div>
+
+      {refeicoesHoje.length > 0 && (
+        <div style={{ background: C.card, borderRadius: 14, padding: '14px 16px', border: `1px solid ${C.border}`, marginBottom: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8 }}>
+            {[
+              { label: 'Kcal', val: Math.round(totalDia.kcal), cor: C.accent },
+              { label: 'Proteína', val: `${Math.round(totalDia.proteina)}g`, cor: C.blue },
+              { label: 'Carbo', val: `${Math.round(totalDia.carboidrato)}g`, cor: C.orange },
+              { label: 'Gordura', val: `${Math.round(totalDia.gordura)}g`, cor: C.orange },
+            ].map((m, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: 9, color: C.muted, margin: '0 0 3px', textTransform: 'uppercase' }}>{m.label}</p>
+                <p style={{ fontSize: 15, fontWeight: 800, margin: 0, color: m.cor }}>{m.val}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {refeicoesHoje.length === 0 && !abrindo && (
+        <p style={{ fontSize: 12, color: C.muted2, textAlign: 'center', padding: '12px 0' }}>Nenhuma refeição registrada hoje.</p>
+      )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {refeicoesHoje.map(r => (
+          <div key={r.id} style={{ background: C.card, borderRadius: 12, padding: '12px 14px', border: `1px solid ${C.border}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <span style={{ fontSize: 12, color: C.muted, fontWeight: 700 }}>{r.hora}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: C.accent }}>{Math.round(r.kcal_total || 0)}kcal</span>
+                <button onClick={() => deletarRefeicao(r.id, r.data)} style={{ background: 'none', border: 'none', color: C.muted2, cursor: 'pointer', fontSize: 16, padding: 0, lineHeight: 1 }}>×</button>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {(r.itens || []).map((it, i) => (
+                <p key={i} style={{ fontSize: 12, color: C.text, margin: 0 }}>• {it.nome} <span style={{ color: C.muted2 }}>({Math.round(it.kcal)}kcal)</span></p>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
+              <span style={{ fontSize: 10, color: C.blue }}>P {Math.round(r.proteina_total || 0)}g</span>
+              <span style={{ fontSize: 10, color: C.orange }}>C {Math.round(r.carboidrato_total || 0)}g</span>
+              <span style={{ fontSize: 10, color: C.orange }}>G {Math.round(r.gordura_total || 0)}g</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {abrindo && <NovaRefeicao fechar={() => setAbrindo(false)} salvarRefeicao={salvarRefeicao} />}
+    </div>
+  );
+}
+
+// ─── NOVA REFEIÇÃO (registro item a item, com IA calculando macros) ──
+function NovaRefeicao({ fechar, salvarRefeicao }) {
+  const [itens, setItens] = useState([]);
+  const [tipoAtivo, setTipoAtivo] = useState(null); // 'foto' | 'print' | 'generico' | 'pesado'
+  const [nomeInput, setNomeInput] = useState('');
+  const [gramasInput, setGramasInput] = useState('');
+  const [porcoesInput, setPorcoesInput] = useState('1');
+  const [fotoFile, setFotoFile] = useState(null);
+  const [calculando, setCalculando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [salvando, setSalvando] = useState(false);
+  const inputFotoRef = useRef(null);
+
+  const resetFormItem = () => {
+    setTipoAtivo(null); setNomeInput(''); setGramasInput(''); setPorcoesInput('1'); setFotoFile(null); setErro('');
+  };
+
+  const calcularItem = async () => {
+    if (calculando) return;
+    setCalculando(true); setErro('');
+    try {
+      let system, userContent;
+      if (tipoAtivo === 'foto') {
+        if (!fotoFile) { setErro('Tire ou selecione uma foto do rótulo.'); setCalculando(false); return; }
+        const base64 = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = () => res(reader.result.split(',')[1]);
+          reader.onerror = rej;
+          reader.readAsDataURL(fotoFile);
+        });
+        system = 'Você é um nutricionista. Leia a tabela nutricional na foto (valores por porção). Multiplique pelos números de porções informado. Responda APENAS com JSON válido, sem markdown, no formato: {"nome": "...", "kcal": 0, "proteina_g": 0, "carboidrato_g": 0, "gordura_g": 0}. Os valores devem já estar multiplicados pelo número de porções.';
+        userContent = [
+          { type: 'image', source: { type: 'base64', media_type: fotoFile.type || 'image/jpeg', data: base64 } },
+          { type: 'text', text: `Número de porções consumidas: ${porcoesInput || 1}. ${nomeInput ? `Nome do produto: ${nomeInput}.` : ''} Calcule o total de kcal, proteína, carboidrato e gordura para essa quantidade.` }
+        ];
+      } else if (tipoAtivo === 'print') {
+        if (!fotoFile) { setErro('Envie o print da pesquisa.'); setCalculando(false); return; }
+        const base64 = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = () => res(reader.result.split(',')[1]);
+          reader.onerror = rej;
+          reader.readAsDataURL(fotoFile);
+        });
+        system = 'Você é um nutricionista. A imagem é um print/captura de tela de uma pesquisa (ex: Google) mostrando informações nutricionais de um alimento ou produto. Leia os valores de kcal, proteína, carboidrato e gordura visíveis na imagem. Se houver um multiplicador de quantidade informado pelo usuário, multiplique os valores por ele (padrão 1, ou seja, os valores já refletem a porção mostrada na imagem, salvo indicação contrária). Responda APENAS com JSON válido, sem markdown, no formato: {"nome": "...", "kcal": 0, "proteina_g": 0, "carboidrato_g": 0, "gordura_g": 0}.';
+        userContent = [
+          { type: 'image', source: { type: 'base64', media_type: fotoFile.type || 'image/jpeg', data: base64 } },
+          { type: 'text', text: `Quantidade/multiplicador: ${porcoesInput || 1}. ${nomeInput ? `Nome do alimento: ${nomeInput}.` : ''} Extraia os valores nutricionais visíveis no print.` }
+        ];
+      } else if (tipoAtivo === 'generico') {
+        if (!nomeInput.trim()) { setErro('Descreva o alimento (ex: 1 ovo, 1 banana média).'); setCalculando(false); return; }
+        system = 'Você é um nutricionista especialista em macronutrientes. Dado um alimento com quantidade descrita de forma genérica (ex: "1 ovo", "1 banana média"), estime kcal, proteína, carboidrato e gordura totais para essa quantidade, usando valores nutricionais médios/típicos. Responda APENAS com JSON válido, sem markdown, no formato: {"nome": "...", "kcal": 0, "proteina_g": 0, "carboidrato_g": 0, "gordura_g": 0}.';
+        userContent = [{ type: 'text', text: nomeInput }];
+      } else if (tipoAtivo === 'pesado') {
+        if (!nomeInput.trim() || !gramasInput) { setErro('Informe o nome do alimento e o peso em gramas.'); setCalculando(false); return; }
+        system = 'Você é um nutricionista especialista em macronutrientes. Dado um alimento e seu peso exato em gramas, calcule kcal, proteína, carboidrato e gordura totais para essa quantidade, usando a composição nutricional típica por 100g desse alimento. Responda APENAS com JSON válido, sem markdown, no formato: {"nome": "...", "kcal": 0, "proteina_g": 0, "carboidrato_g": 0, "gordura_g": 0}.';
+        userContent = [{ type: 'text', text: `Alimento: ${nomeInput}. Peso: ${gramasInput}g.` }];
+      } else {
+        setCalculando(false);
+        return;
+      }
+
+      const res = await fetch('/api/ai', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system, messages: [{ role: 'user', content: userContent }] }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const detalhe = data?.error?.message || data?.error || `status ${res.status}`;
+        setErro(`Erro (${res.status}): ${detalhe}`); setCalculando(false); return;
+      }
+      const texto = data.content?.map(c => c.text || '').join('') || '';
+      const parsed = JSON.parse(texto.replace(/```json|```/g, '').trim());
+      const item = {
+        nome: parsed.nome || nomeInput || 'Item',
+        kcal: Number(parsed.kcal) || 0,
+        proteina_g: Number(parsed.proteina_g) || 0,
+        carboidrato_g: Number(parsed.carboidrato_g) || 0,
+        gordura_g: Number(parsed.gordura_g) || 0,
+      };
+      setItens(p => [...p, item]);
+      resetFormItem();
+    } catch (e) {
+      setErro('Não consegui calcular esse item. Tente novamente ou ajuste a descrição.');
+    } finally { setCalculando(false); }
+  };
+
+  const removerItem = (idx) => setItens(p => p.filter((_, i) => i !== idx));
+
+  const total = itens.reduce((acc, it) => ({
+    kcal: acc.kcal + it.kcal,
+    proteina: acc.proteina + it.proteina_g,
+    carboidrato: acc.carboidrato + it.carboidrato_g,
+    gordura: acc.gordura + it.gordura_g,
+  }), { kcal: 0, proteina: 0, carboidrato: 0, gordura: 0 });
+
+  const salvar = async () => {
+    if (itens.length === 0 || salvando) return;
+    setSalvando(true);
+    const agora = new Date();
+    const hora = `${String(agora.getHours()).padStart(2,'0')}:${String(agora.getMinutes()).padStart(2,'0')}`;
+    await salvarRefeicao({
+      data: dateKey(),
+      hora,
+      itens: itens.map(it => ({ nome: it.nome, kcal: it.kcal, proteina_g: it.proteina_g, carboidrato_g: it.carboidrato_g, gordura_g: it.gordura_g })),
+      kcal_total: total.kcal,
+      proteina_total: total.proteina,
+      carboidrato_total: total.carboidrato,
+      gordura_total: total.gordura,
+    });
+    setSalvando(false);
+    fechar();
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+      <div style={{ background: C.card, borderRadius: '20px 20px 0 0', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: `1px solid ${C.border}` }}>
+          <p style={{ fontSize: 15, fontWeight: 700, margin: 0, color: C.accent }}>Nova refeição</p>
+          <button onClick={fechar} style={{ background: C.card2, border: 'none', color: C.muted, cursor: 'pointer', width: 32, height: 32, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+          {itens.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+                {itens.map((it, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.card2, borderRadius: 10, padding: '8px 12px' }}>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 600, margin: 0, color: C.text }}>{it.nome}</p>
+                      <p style={{ fontSize: 10, color: C.muted, margin: '2px 0 0' }}>{Math.round(it.kcal)}kcal · P{Math.round(it.proteina_g)} C{Math.round(it.carboidrato_g)} G{Math.round(it.gordura_g)}</p>
+                    </div>
+                    <button onClick={() => removerItem(i)} style={{ background: 'none', border: 'none', color: C.muted2, cursor: 'pointer', fontSize: 18, padding: '0 4px' }}>×</button>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: C.accentDim, borderRadius: 10, padding: '10px 12px', display: 'flex', justifyContent: 'space-around' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.accent }}>{Math.round(total.kcal)}kcal</span>
+                <span style={{ fontSize: 12, color: C.blue }}>P{Math.round(total.proteina)}g</span>
+                <span style={{ fontSize: 12, color: C.orange }}>C{Math.round(total.carboidrato)}g</span>
+                <span style={{ fontSize: 12, color: C.orange }}>G{Math.round(total.gordura)}g</span>
+              </div>
+            </div>
+          )}
+
+          {!tipoAtivo ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.muted, margin: '0 0 4px' }}>Adicionar item</p>
+              <button onClick={() => setTipoAtivo('foto')} style={{ textAlign: 'left', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', color: C.text, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                📷 Foto do rótulo <span style={{ color: C.muted, fontWeight: 400 }}>— tabela nutricional (whey, barrinha...)</span>
+              </button>
+              <button onClick={() => setTipoAtivo('print')} style={{ textAlign: 'left', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', color: C.text, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                📱 Print da pesquisa <span style={{ color: C.muted, fontWeight: 400 }}>— pesquisou no Google, manda o print</span>
+              </button>
+              <button onClick={() => setTipoAtivo('generico')} style={{ textAlign: 'left', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', color: C.text, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                🍎 Alimento genérico <span style={{ color: C.muted, fontWeight: 400 }}>— ex: 1 ovo, 1 banana média</span>
+              </button>
+              <button onClick={() => setTipoAtivo('pesado')} style={{ textAlign: 'left', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', color: C.text, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                ⚖️ Pesei o alimento <span style={{ color: C.muted, fontWeight: 400 }}>— ex: aveia, 10g</span>
+              </button>
+            </div>
+          ) : (
+            <div>
+              <button onClick={() => { resetFormItem(); }} style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', fontSize: 12, padding: 0, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg> Voltar
+              </button>
+
+              {tipoAtivo === 'foto' && (
+                <>
+                  <input ref={inputFotoRef} type="file" accept="image/*" onChange={e => setFotoFile(e.target.files[0])} style={{ display: 'none' }} />
+                  <button onClick={() => inputFotoRef.current?.click()}
+                    style={{ width: '100%', background: fotoFile ? C.accentDim : 'rgba(88,196,246,0.1)', border: `1px solid ${fotoFile ? C.accent : C.blue}`, borderRadius: 10, padding: '12px', color: fotoFile ? C.accent : C.blue, fontSize: 13, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+                    {fotoFile ? `✓ ${fotoFile.name}` : '📷 Selecionar foto do rótulo'}
+                  </button>
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Nome (opcional)</p>
+                  <input value={nomeInput} onChange={e => setNomeInput(e.target.value)} placeholder="ex: Whey concentrado"
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Quantas porções (scoops/unidades)</p>
+                  <input type="number" step="0.5" value={porcoesInput} onChange={e => setPorcoesInput(e.target.value)}
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                </>
+              )}
+
+              {tipoAtivo === 'print' && (
+                <>
+                  <input ref={inputFotoRef} type="file" accept="image/*" onChange={e => setFotoFile(e.target.files[0])} style={{ display: 'none' }} />
+                  <button onClick={() => inputFotoRef.current?.click()}
+                    style={{ width: '100%', background: fotoFile ? C.accentDim : 'rgba(88,196,246,0.1)', border: `1px solid ${fotoFile ? C.accent : C.blue}`, borderRadius: 10, padding: '12px', color: fotoFile ? C.accent : C.blue, fontSize: 13, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+                    {fotoFile ? `✓ ${fotoFile.name}` : '📱 Selecionar print da pesquisa'}
+                  </button>
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Nome (opcional)</p>
+                  <input value={nomeInput} onChange={e => setNomeInput(e.target.value)} placeholder="ex: Sonho de Valsa"
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Multiplicador (deixe 1 se o print já mostra o total que você comeu)</p>
+                  <input type="number" step="0.5" value={porcoesInput} onChange={e => setPorcoesInput(e.target.value)}
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                </>
+              )}
+
+              {tipoAtivo === 'generico' && (
+                <>
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Descreva o alimento e a quantidade</p>
+                  <input value={nomeInput} onChange={e => setNomeInput(e.target.value)} placeholder="ex: 1 ovo, 1 banana média"
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                </>
+              )}
+
+              {tipoAtivo === 'pesado' && (
+                <>
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Alimento</p>
+                  <input value={nomeInput} onChange={e => setNomeInput(e.target.value)} placeholder="ex: aveia"
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
+                  <p style={{ fontSize: 10, color: C.muted, margin: '0 0 4px', textTransform: 'uppercase' }}>Peso (gramas)</p>
+                  <input type="number" value={gramasInput} onChange={e => setGramasInput(e.target.value)} placeholder="10"
+                    style={{ width: '100%', background: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, padding: '10px', color: C.text, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                </>
+              )}
+
+              {erro && <p style={{ fontSize: 12, color: C.danger, margin: '10px 0 0' }}>{erro}</p>}
+
+              <button onClick={calcularItem} disabled={calculando}
+                style={{ width: '100%', marginTop: 14, background: C.accent, color: '#18181B', border: 'none', borderRadius: 10, padding: '12px', fontSize: 14, fontWeight: 700, cursor: calculando ? 'default' : 'pointer', opacity: calculando ? 0.6 : 1 }}>
+                {calculando ? '⏳ Calculando...' : 'Calcular e adicionar'}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ padding: '14px 20px', borderTop: `1px solid ${C.border}` }}>
+          <button onClick={salvar} disabled={itens.length === 0 || salvando}
+            style={{ width: '100%', background: itens.length === 0 ? C.card2 : C.accent, color: itens.length === 0 ? C.muted : '#18181B', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 800, cursor: itens.length === 0 ? 'default' : 'pointer' }}>
+            {salvando ? 'Salvando...' : `Salvar refeição (${itens.length} ${itens.length === 1 ? 'item' : 'itens'})`}
+          </button>
+        </div>
       </div>
     </div>
   );
