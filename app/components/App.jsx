@@ -12,102 +12,94 @@ const C = {
 };
 
 const SPLIT = {
-  domingo:  { nome: 'A1', titulo: 'Pernas — quadríceps', subtitulo: 'Abdômen incluído', cor: C.accent,
+  domingo:  { nome: 'Pernas A', titulo: 'Quadríceps + core', subtitulo: 'Core incluído', cor: C.accent,
     exercicios: [
-      { id: 'pendulum_squat', nome: 'Pendulum squat', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'belt_squat', nome: 'Belt squat', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: true },
-      { id: 'agach_smith', nome: 'Agachamento no Smith', series: '3x8-10', rir: '2/1/1', descanso: '2min', principal: false },
-      { id: 'extensora_a1', nome: 'Cadeira extensora', series: '3x8-10', rir: '2/1/0-1', descanso: '90s', principal: false },
-      { id: 'leg_press_45_unilat_a1', nome: 'Leg press 45° unilateral', series: '3x8-10/perna', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'mesa_flexora_a1', nome: 'Mesa flexora', series: '3x8-10', rir: '2/1/0-1', descanso: '90s', principal: false },
-      { id: 'pant_pe_a1', nome: 'Panturrilha em pé', series: '4x8-10', rir: '2/1/1/0-1', descanso: '90s', principal: false },
-      { id: 'pant_sentada_a1', nome: 'Panturrilha sentada', series: '3x10-12', rir: '2/1/0-1', descanso: '60-90s', principal: false },
-      { id: 'cable_crunch', nome: 'Cable crunch', series: '3x8-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'prancha_a1', nome: 'Prancha com carga', series: '3x30-45s', rir: '1-2/1/1', descanso: '60s', principal: false },
+      { id: 'agach_smith_pa', nome: 'Agachamento no Smith', series: '3x6-8', rir: '2/1/1', descanso: '3min', principal: true, falha: '' },
+      { id: 'leg_press_uni_90', nome: 'Leg press unilateral sentado 90°', series: '2x6-8/perna', rir: '1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
+      { id: 'extensora_uni_pa', nome: 'Cadeira extensora unilateral', series: '2x6-8/perna', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'adutora_pa', nome: 'Máquina adutora', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'abdutora_pa', nome: 'Máquina abdutora', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'pant_sent_pa', nome: 'Panturrilha sentada / máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'crunch_cabo_pa', nome: 'Crunch ajoelhado no cabo', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'elev_joelhos_romana', nome: 'Elevação de joelhos (romana, retroversão)', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
     ]
   },
-  segunda:  { nome: 'B1', titulo: 'Peito, ombros e tríceps', subtitulo: '', cor: C.orange,
+  segunda:  { nome: 'Push A', titulo: 'Peitoral + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'supino_barra_b1', nome: 'Supino reto com barra', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'supino_incl_maq', nome: 'Supino inclinado na máquina', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: true },
-      { id: 'supino_conv', nome: 'Supino convergente', series: '3x8-10', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'peck_deck_b1', nome: 'Peck deck / crucifixo máquina', series: '3x10-12', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'paralelas_b1', nome: 'Paralelas', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: false },
-      { id: 'desenv_maq_b1', nome: 'Desenvolvimento na máquina', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: false },
-      { id: 'elev_lat_maq_b1', nome: 'Elevação lateral na máquina', series: '4x10-12', rir: '2/1/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'triceps_polia', nome: 'Tríceps polia barra V/corda', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'triceps_frances_b1', nome: 'Tríceps francês na polia', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'flexao_ctrl', nome: 'Flexão de braço controlada', series: '2x8-12', rir: '1-2/1', descanso: '60-90s', principal: false },
+      { id: 'supino_reto_smith', nome: 'Supino reto no Smith', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
+      { id: 'supino_incl_maq_pa', nome: 'Supino inclinado em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'peck_deck_pa', nome: 'Peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'supino_fechado_smith', nome: 'Supino fechado no Smith', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'desenv_ombros_maquina', nome: 'Desenvolvimento de ombros na máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última à falha, se seguro' },
+      { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_overhead_corda', nome: 'Extensão de tríceps overhead (corda)', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'mergulho_maquina', nome: 'Mergulho em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_uni_cruz_pa', nome: 'Tríceps unilateral cruzado no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
     ]
   },
-  terca:    { nome: 'C1', titulo: 'Costas e bíceps', subtitulo: 'Abdômen incluído', cor: C.blue,
+  terca:    { nome: 'Pull A', titulo: 'Largura das costas + bíceps', subtitulo: '', cor: C.blue,
     exercicios: [
-      { id: 'barra_fixa_c1', nome: 'Barra fixa', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'remada_t_c1', nome: 'Remada T / cavalinho', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'puxada_alta', nome: 'Puxada alta aberta', series: '3x8-10', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'remada_baixa_c1', nome: 'Remada baixa neutra', series: '3x8-10', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'remada_unilat_c1', nome: 'Remada unilateral máquina', series: '3x8-10/lado', rir: '2/1/1', descanso: '90s', principal: false },
-      { id: 'pulldown_ext', nome: 'Pulldown braços estendidos', series: '3x10-12', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'crucifixo_inv_c1', nome: 'Crucifixo inverso máquina', series: '3x10-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'rosca_w_c1', nome: 'Rosca direta barra W', series: '3x6-8', rir: '2/1/1', descanso: '90s', principal: false },
-      { id: 'rosca_scott_c1', nome: 'Rosca Scott máquina', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'elev_pernas_c1', nome: 'Elevação de pernas', series: '3x8-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'pallof_c1', nome: 'Pallof press na polia', series: '3x10-12/lado', rir: '2/1/1', descanso: '45-60s', principal: false },
+      { id: 'puxada_artic_pa', nome: 'Puxada articulada (máquina/anilhas)', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
+      { id: 'puxada_neutra_pa', nome: 'Puxada alta pegada neutra', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'remada_artic_pa', nome: 'Remada articulada c/ apoio no peito', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
+      { id: 'remada_uni_pa', nome: 'Remada unilateral (máquina/cabo)', series: '2x6-8/lado', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'pullover_maq_pa', nome: 'Pullover em máquina', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_scott_pa', nome: 'Rosca Scott em máquina', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_incl_pa', nome: 'Rosca inclinada com halteres', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_martelo_pa', nome: 'Rosca martelo com halteres', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
     ]
   },
-  quarta:   { nome: 'A2', titulo: 'Pernas — posterior e glúteos', subtitulo: '', cor: C.accent,
+  quarta:   { nome: 'Pernas B', titulo: 'Posteriores + glúteos + core', subtitulo: 'Core incluído', cor: C.accent,
     exercicios: [
-      { id: 'terra_romeno', nome: 'Terra romeno', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'mesa_flexora_a2', nome: 'Mesa flexora', series: '4x6-8', rir: '2/1/1/0-1', descanso: '90-120s', principal: true },
-      { id: 'flexora_unilat', nome: 'Cadeira flexora unilateral', series: '3x8-10/perna', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'hip_thrust', nome: 'Hip thrust', series: '4x6-8', rir: '2/2/1/1', descanso: '2min', principal: true },
-      { id: 'belt_squat_a2', nome: 'Belt squat passada longa', series: '3x8-10', rir: '2/1/1', descanso: '2min', principal: false },
-      { id: 'extensora_a2', nome: 'Extensora moderada', series: '3x8-10', rir: '2/1/1', descanso: '90s', principal: false },
-      { id: 'adutora_a2', nome: 'Adutora', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'abdutora_a2', nome: 'Abdutora', series: '3x10-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'pant_maq_a2', nome: 'Panturrilha máquina', series: '4x8-10', rir: '2/1/1/0-1', descanso: '90s', principal: false },
-      { id: 'pant_sentada_a2', nome: 'Panturrilha sentada', series: '3x10-12', rir: '2/1/0-1', descanso: '60-90s', principal: false },
+      { id: 'hip_thrust_pb', nome: 'Hip thrust (máquina/Smith)', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
+      { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'flexora_deit_pb', nome: 'Flexora deitada', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'leg_press_uni_90', nome: 'Leg press unilateral sentado 90°', series: '2x6-8/perna', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'coice_gluteo_pb', nome: 'Coice de glúteo em máquina', series: '2x6-8/perna', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'pant_pe_pb', nome: 'Panturrilha em pé na máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'abdominal_maq_pb', nome: 'Abdominal em máquina', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'ab_wheel_pb', nome: 'Ab wheel', series: '2x6-8', rir: '2/1', descanso: '2min', principal: false, falha: '' },
+      { id: 'pallof_pb', nome: 'Pallof press no cabo (2s de sustentação)', series: '2x6-8/lado', rir: '2/1', descanso: '60-90s', principal: false, falha: '' },
     ]
   },
-  quinta:   { nome: 'B2', titulo: 'Peito, ombros e tríceps', subtitulo: 'Abdômen incluído', cor: C.orange,
+  quinta:   { nome: 'Push B', titulo: 'Ombros + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'supino_incl_barra', nome: 'Supino inclinado com barra', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'supino_conv_b2', nome: 'Supino convergente reto', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: false },
-      { id: 'chest_press_b2', nome: 'Chest press sentado', series: '3x8-10', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'crossover_alto', nome: 'Crossover polia alta', series: '3x10-12', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'desenv_smith_b2', nome: 'Desenvolvimento máquina/Smith', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: true },
-      { id: 'elev_lat_halt', nome: 'Elevação lateral com halteres', series: '3x10-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'elev_lat_cabo', nome: 'Elevação lateral cabo unilateral', series: '3x10-12/lado', rir: '2/1/0-1', descanso: '60s', principal: false },
-      { id: 'triceps_testa', nome: 'Tríceps testa polia/barra W', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'triceps_unilat', nome: 'Tríceps unilateral na polia', series: '3x10-12/braço', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'ab_wheel', nome: 'Ab wheel / rollout', series: '3x6-10', rir: '2/1/1', descanso: '75-90s', principal: false },
-      { id: 'prancha_lat', nome: 'Prancha lateral', series: '3x25-40s/lado', rir: '1-2/1/1', descanso: '45-60s', principal: false },
+      { id: 'desenv_ombros_maquina', nome: 'Desenvolvimento de ombros na máquina', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última à falha, se seguro' },
+      { id: 'supino_incl_smith_pb', nome: 'Supino inclinado no Smith (~30°)', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'elev_lat_uni_pb', nome: 'Elevação lateral unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'supino_conv_pb', nome: 'Supino convergente em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_overhead_corda', nome: 'Extensão de tríceps overhead (corda)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_uni_pb', nome: 'Tríceps unilateral na polia', series: '2x6-8/braço', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'mergulho_maquina', nome: 'Mergulho em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
     ]
   },
-  sexta:    { nome: 'C2', titulo: 'Costas e bíceps', subtitulo: '', cor: C.blue,
+  sexta:    { nome: 'Pull B', titulo: 'Espessura das costas + core', subtitulo: 'Core incluído', cor: C.blue,
     exercicios: [
-      { id: 'puxada_neut', nome: 'Puxada neutra/supinada', series: '4x6-8', rir: '2/2/1/1', descanso: '2min', principal: true },
-      { id: 'remada_curv_c2', nome: 'Remada curvada/apoiada pesada', series: '4x6-8', rir: '2/2/1/1', descanso: '2-3min', principal: true },
-      { id: 'remada_unilat_c2', nome: 'Remada unilateral máquina', series: '3x8-10/lado', rir: '2/1/1', descanso: '90s', principal: false },
-      { id: 'remada_baixa_c2', nome: 'Remada baixa aberta/neutra', series: '3x8-10', rir: '2/1/1', descanso: '90-120s', principal: false },
-      { id: 'pulldown_unilat', nome: 'Pulldown unilateral polia', series: '3x8-10/lado', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'encolh_c2', nome: 'Encolhimento halteres/máquina', series: '3x8-10', rir: '2/1/1', descanso: '90s', principal: false },
-      { id: 'crucifixo_inv_c2', nome: 'Crucifixo inverso máquina/polia', series: '3x10-12', rir: '2/1/0-1', descanso: '60-75s', principal: false },
-      { id: 'rosca_scott_c2', nome: 'Rosca Scott máquina', series: '3x6-8', rir: '2/1/0-1', descanso: '90s', principal: false },
-      { id: 'rosca_bayesian', nome: 'Rosca bayesian na polia', series: '3x8-10/braço', rir: '2/1/0-1', descanso: '75-90s', principal: false },
-      { id: 'rosca_martelo', nome: 'Rosca martelo halteres/corda', series: '3x8-10', rir: '2/1/0-1', descanso: '75-90s', principal: false },
+      { id: 'remada_t_pb', nome: 'Remada T c/ apoio no peito', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
+      { id: 'remada_uni_pb', nome: 'Remada articulada unilateral (neutra)', series: '3x6-8/braço', rir: '2/1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
+      { id: 'puxada_pronada_pb', nome: 'Puxada alta pronada', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'encolhimento_pb', nome: 'Encolhimento (máquina/Smith)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_bayesian_pb', nome: 'Rosca Bayesian unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_martelo_scott_pb', nome: 'Rosca martelo no banco Scott', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'elev_joelhos_romana', nome: 'Elevação de joelhos (romana, retroversão)', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'flexao_lat_pb', nome: 'Flexão lateral do tronco no cabo', series: '2x6-8/lado', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
     ]
   },
-  sabado:   { nome: '—', titulo: 'Descanso', subtitulo: 'Recuperação ativa', cor: C.muted,
+  sabado:   { nome: '—', titulo: 'Descanso completo', subtitulo: 'Sem musculação ou aeróbico', cor: C.muted,
     exercicios: [
-      { id: 'descanso', nome: 'Descanso ou aeróbico leve', series: '—', rir: '—', descanso: '—', principal: false },
+      { id: 'descanso', nome: 'Descanso completo', series: '—', rir: '—', descanso: '—', principal: false },
     ]
   },
 };
 
 const DIAS_KEY = ['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
 const DIAS_LABEL = { domingo:'Dom',segunda:'Seg',terca:'Ter',quarta:'Qua',quinta:'Qui',sexta:'Sex',sabado:'Sáb' };
-const COMPOSTOS = ['pendulum_squat','belt_squat','terra_romeno','hip_thrust','barra_fixa_c1','supino_barra_b1','supino_incl_barra','remada_t_c1','remada_curv_c2','puxada_neut','desenv_smith_b2'];
+const COMPOSTOS = ['agach_smith_pa','leg_press_uni_90','supino_reto_smith','puxada_artic_pa','remada_artic_pa','hip_thrust_pb','desenv_ombros_maquina','remada_t_pb','remada_uni_pb'];
 
 const HISTORICO_PESO_INICIAL = [
   {data:"2026-01-05",peso:"99.2",gordura:"32.3",muscular:"63.79",visceral:"15.9",agua:"48.9",tmb:"1820",fonte:"relax"},
@@ -124,7 +116,7 @@ const HISTORICO_PESO_INICIAL = [
   {data:"2026-06-27",peso:"76.8",gordura:"13.8",muscular:"38.1",visceral:"4",agua:"48.7",tmb:"1800",fonte:"inbody"},
 ];
 
-const CICLO_INICIO = new Date('2026-06-29');
+const CICLO_INICIO = new Date('2026-08-23');
 const CICLO_SEMANAS = 13;
 
 const dateKey = (d = new Date()) => {
@@ -159,7 +151,6 @@ export default function App() {
   const [refeicoes, setRefeicoes] = useState({}); // { 'YYYY-MM-DD': [refeicao, ...] }
   const [historicoTreinos, setHistoricoTreinos] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [aiOpen, setAiOpen] = useState(false);
   const [timer, setTimer] = useState(null);
   const timerRef = useRef(null);
 
@@ -227,7 +218,7 @@ export default function App() {
 
   const salvarRegistro = useCallback(async (key, dados) => {
     const data = key.replace('reg:', '');
-    setRegistros(p => ({ ...p, [key]: dados }));
+    setRegistros(p => ({ ...p, [key]: { ...dados, data } }));
     try {
       await supabase.from('registros').upsert({
         data,
@@ -333,15 +324,14 @@ export default function App() {
       {aba === 'progresso' && <TelaProgresso registros={registros} />}
       {aba === 'historico' && <TelaHistorico historicoTreinos={historicoTreinos} />}
       {aba === 'ciclo'     && <TelaCiclo registros={registros} setAba={setAba} historicoTreinos={historicoTreinos} />}
-      <Nav aba={aba} setAba={setAba} setAiOpen={setAiOpen} />
+      <Nav aba={aba} setAba={setAba} />
       {timer && <TimerFlutuante timer={timer} fechar={fecharTimer} />}
-      {aiOpen && <AiConsulta registros={registros} pesoHist={pesoHist} fechar={() => setAiOpen(false)} />}
     </div>
   );
 }
 
 // ─── NAV ────────────────────────────────────────────────────────
-function Nav({ aba, setAba, setAiOpen }) {
+function Nav({ aba, setAba }) {
   const itens = [
     { id: 'hoje', label: 'Hoje', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
     { id: 'corpo', label: 'Corpo', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM6.5 8a1 1 0 0 0-.8.4l-3 4a1 1 0 0 0 1.6 1.2L6 11.3V20a1 1 0 0 0 2 0v-4h8v4a1 1 0 0 0 2 0v-8.7l1.7 2.3a1 1 0 1 0 1.6-1.2l-3-4A1 1 0 0 0 17.5 8h-11z"/></svg> },
@@ -360,11 +350,6 @@ function Nav({ aba, setAba, setAiOpen }) {
           </button>
         );
       })}
-      <button onClick={() => setAiOpen(true)} style={{ width: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'none', cursor: 'pointer', paddingBottom: 8 }}>
-        <div style={{ width: 34, height: 34, borderRadius: 10, background: C.card2, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.accent} strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" strokeLinecap="round"/></svg>
-        </div>
-      </button>
     </div>
   );
 }
@@ -388,9 +373,6 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, registros, salvarRegistro, 
         const ultimo = buscarUltimoRegistro(e.id, registros, hojeStr);
         if (ultimo) {
           inicial[e.id] = { carga: ultimo.carga || '', rir: ultimo.rir || '', reps: ultimo.reps || '', feito: base[e.id]?.feito || false };
-        } else if (e.id === 'leg_press_45_unilat_a1') {
-          // Exercício novo, sem histórico ainda — começa com carga inicial sugerida
-          inicial[e.id] = { carga: '40/40', rir: '', reps: '', feito: base[e.id]?.feito || false };
         } else {
           inicial[e.id] = base[e.id] || {};
         }
@@ -587,6 +569,7 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, registros, salvarRegistro, 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 14, fontWeight: 600, margin: 0, color: feito ? C.muted : C.text, textDecoration: feito ? 'line-through' : 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i+1}. {e.nome}</p>
                     <p style={{ fontSize: 11, color: C.muted, margin: '2px 0 0' }}>{e.series} · RIR {e.rir}</p>
+                    {e.falha && <p style={{ fontSize: 10, color: C.orange, fontWeight: 700, margin: '2px 0 0' }}>⚡ {e.falha}</p>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                     {dados.carga && <span style={{ fontSize: 12, color: C.accent, fontWeight: 700 }}>{dados.carga}kg</span>}
@@ -1395,7 +1378,7 @@ function NovaRefeicao({ fechar, salvarRefeicao }) {
 // ─── TELA PROGRESSO ──────────────────────────────────────────────
 function TelaProgresso({ registros }) {
   const todosEx = [];
-  Object.values(SPLIT).forEach(dia => dia.exercicios.forEach(e => { if (e.id !== 'descanso') todosEx.push(e); }));
+  Object.values(SPLIT).forEach(dia => dia.exercicios.forEach(e => { if (e.id !== 'descanso' && !todosEx.some(x => x.id === e.id)) todosEx.push(e); }));
   const compostos = todosEx.filter(e => COMPOSTOS.includes(e.id));
   const [selecionado, setSelecionado] = useState(compostos[0]?.id || '');
 
@@ -1635,112 +1618,6 @@ function TelaCiclo({ registros, setAba, historicoTreinos }) {
             </div>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-// ─── AI CONSULTA ─────────────────────────────────────────────────
-function AiConsulta({ registros, pesoHist, fechar }) {
-  const [msgs, setMsgs] = useState([{ role: 'assistant', content: 'Olá! Sou seu personal trainer virtual. Pode me perguntar qualquer coisa sobre o treino de hoje, substituições de exercícios, recuperação, ou qualquer dúvida.' }]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const endRef = useRef(null);
-
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
-
-  const enviar = async () => {
-    if (!input.trim() || loading) return;
-    const userMsg = input.trim();
-    setInput('');
-    setMsgs(p => [...p, { role: 'user', content: userMsg }]);
-    setLoading(true);
-    const ultimoInBody = [...pesoHist].reverse().find(r => r.fonte === 'inbody');
-    const ultimoPeso = pesoHist.length > 0 ? pesoHist[pesoHist.length-1] : null;
-    const system = `Você é um personal trainer expert em hipertrofia, com profundo conhecimento científico. Responda de forma direta e técnica em português brasileiro. Máximo 150 palavras.
-
-Contexto do atleta:
-- Leandro, 41 anos, 1.72m
-- Peso atual: ${ultimoPeso?.peso || '76.8'}kg (veio de 99.2kg em janeiro/2026)
-- InBody (${ultimoInBody?.data || '27/06/2026'}): gordura ${ultimoInBody?.gordura || '13.8'}%, massa muscular ${ultimoInBody?.muscular || '38.1'}kg, visceral nível ${ultimoInBody?.visceral || '4'}, TMB ${ultimoInBody?.tmb || '1800'}kcal, pontuação 91/100
-- Objetivo: hipertrofia em cutting
-- Experiência: 20+ anos (avançado)
-- Split A/B/C, 6x/semana, início 29/06/2026
-- Restrição: dor no tornozelo em sprints — sem restrição para musculação
-- Treino de hoje: ${SPLIT[getDiaKey()].nome} — ${SPLIT[getDiaKey()].titulo}`;
-
-    try {
-      const history = msgs.slice(-6).map(m => ({ role: m.role, content: m.content }));
-      const res = await fetch('/api/ai', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ system, messages: [...history, { role: 'user', content: userMsg }] }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        // Mostra o erro de verdade em vez de uma mensagem genérica, pra facilitar diagnóstico
-        const detalhe = data?.error?.message || data?.error || `status ${res.status}`;
-        setMsgs(p => [...p, { role: 'assistant', content: `⚠️ Erro (${res.status}): ${detalhe}` }]);
-        return;
-      }
-
-      const texto = data.content?.map(c => c.text || '').join('');
-      if (!texto) {
-        setMsgs(p => [...p, { role: 'assistant', content: '⚠️ A API respondeu, mas sem conteúdo de texto. Verifique os logs do Render.' }]);
-        return;
-      }
-      setMsgs(p => [...p, { role: 'assistant', content: texto }]);
-    } catch (err) {
-      setMsgs(p => [...p, { role: 'assistant', content: `⚠️ Erro de conexão: ${err.message}` }]);
-    } finally { setLoading(false); }
-  };
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-      <div style={{ background: C.card, borderRadius: '20px 20px 0 0', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: `1px solid ${C.border}` }}>
-          <div>
-            <p style={{ fontSize: 11, color: C.muted, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Personal trainer IA</p>
-            <p style={{ fontSize: 15, fontWeight: 700, margin: '2px 0 0', color: C.accent }}>Pergunte qualquer coisa</p>
-          </div>
-          <button onClick={fechar} style={{ background: C.card2, border: 'none', color: C.muted, cursor: 'pointer', width: 32, height: 32, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div style={{ padding: '10px 16px', display: 'flex', gap: 6, overflowX: 'auto' }}>
-          {['Substituir exercício com dor no tornozelo', 'Estou cansado hoje, adapto o treino?', 'O que priorizar no cutting?'].map(s => (
-            <button key={s} onClick={() => setInput(s)}
-              style={{ flexShrink: 0, padding: '6px 12px', borderRadius: 20, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              {s}
-            </button>
-          ))}
-        </div>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {msgs.map((m, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-              <div style={{ maxWidth: '85%', background: m.role === 'user' ? C.accent : C.card2, color: m.role === 'user' ? '#18181B' : C.text, borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px', padding: '10px 14px', fontSize: 13, lineHeight: 1.5 }}>
-                {m.content}
-              </div>
-            </div>
-          ))}
-          {loading && (
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <div style={{ background: C.card2, borderRadius: '14px 14px 14px 4px', padding: '12px 16px', display: 'flex', gap: 4 }}>
-                {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: C.muted }}/>)}
-              </div>
-            </div>
-          )}
-          <div ref={endRef}/>
-        </div>
-        <div style={{ padding: '12px 16px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: 8 }}>
-          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && enviar()}
-            placeholder="Pergunte algo sobre o treino..."
-            style={{ flex: 1, background: C.card2, border: `1px solid ${C.border}`, borderRadius: 12, padding: '12px 14px', color: C.text, fontSize: 14, outline: 'none' }} />
-          <button onClick={enviar} disabled={loading || !input.trim()}
-            style={{ background: C.accent, border: 'none', borderRadius: 12, width: 46, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: loading || !input.trim() ? 0.5 : 1 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" strokeWidth="2.5" strokeLinecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
       </div>
     </div>
   );
