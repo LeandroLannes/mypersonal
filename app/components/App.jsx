@@ -144,6 +144,25 @@ const buscarUltimoRegistro = (exId, registros, hojeStr) => {
 };
 
 // ─── APP ────────────────────────────────────────────────────────
+// ─── Buffer local (localStorage): protege anotações mesmo sem rede ───
+const LS_PREFIX = 'mp_reg_';
+function lsSalvarReg(key, obj) {
+  try { if (typeof window !== 'undefined') localStorage.setItem(LS_PREFIX + key, JSON.stringify(obj)); } catch (e) {}
+}
+function lsCarregarRegs() {
+  const out = {};
+  try {
+    if (typeof window === 'undefined') return out;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf(LS_PREFIX) === 0) {
+        try { out[k.slice(LS_PREFIX.length)] = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+      }
+    }
+  } catch (e) {}
+  return out;
+}
+
 export default function App() {
   const [aba, setAba] = useState('hoje');
   const [registros, setRegistros] = useState({});
@@ -161,8 +180,8 @@ export default function App() {
         // Carregar registros de treino
         const { data: regs } = await supabase.from('registros').select('*');
         const hoje = dateKey();
+        const mapa = {};
         if (regs) {
-          const mapa = {};
           regs.forEach(r => {
             // Normaliza a data para garantir formato YYYY-MM-DD
             const dataStr = r.data ? String(r.data).slice(0, 10) : '';
@@ -178,9 +197,19 @@ export default function App() {
               data: dataStr,
             };
           });
-          setRegistros(mapa);
           setHistoricoTreinos(regs.filter(r => r.concluido).sort((a,b) => b.data.localeCompare(a.data)));
         }
+        // Reconciliar com o buffer local: nada digitado se perde, mesmo sem rede
+        const locais = lsCarregarRegs();
+        Object.keys(locais).forEach(k => {
+          const loc = locais[k]; if (!loc) return;
+          const serv = mapa[k];
+          mapa[k] = serv ? { ...serv, ...loc, exercicios: { ...(serv.exercicios || {}), ...(loc.exercicios || {}) }, checkin: { ...(serv.checkin || {}), ...(loc.checkin || {}) }, cardio: { ...(serv.cardio || {}), ...(loc.cardio || {}) } } : loc;
+        });
+        setRegistros(mapa);
+        // Curar o Supabase reenviando o registro de hoje (o que falhou antes)
+        const hojeKey = `reg:${hoje}`;
+        if (mapa[hojeKey]) { try { salvarRegistro(hojeKey, mapa[hojeKey]); } catch (e) {} }
 
         // Carregar refeições (últimos 30 dias)
         try {
@@ -218,7 +247,9 @@ export default function App() {
 
   const salvarRegistro = useCallback(async (key, dados) => {
     const data = key.replace('reg:', '');
-    setRegistros(p => ({ ...p, [key]: { ...dados, data } }));
+    const registro = { ...dados, data };
+    setRegistros(p => ({ ...p, [key]: registro }));
+    lsSalvarReg(key, registro);
     try {
       await supabase.from('registros').upsert({
         data,
