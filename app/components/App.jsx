@@ -12,82 +12,62 @@ const C = {
 };
 
 const SPLIT = {
-  domingo:  { nome: 'Pernas A', titulo: 'Quadríceps + core', subtitulo: 'Core incluído', cor: C.accent,
+  domingo:  { nome: 'Pernas A', titulo: 'Quadríceps + core', subtitulo: 'Corretiva — lado esquerdo', cor: C.accent,
     exercicios: [
-      { id: 'agach_smith_pa', nome: 'Agachamento no Smith', series: '3x6-8', rir: '2/1/1', descanso: '3min', principal: true, falha: '' },
-      { id: 'leg_press_uni_90', nome: 'Leg press unilateral sentado 90°', series: '2x6-8/perna', rir: '1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
-      { id: 'extensora_uni_pa', nome: 'Cadeira extensora unilateral', series: '2x6-8/perna', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'adutora_pa', nome: 'Máquina adutora', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'abdutora_pa', nome: 'Máquina abdutora', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'pant_sent_pa', nome: 'Panturrilha sentada / máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última à falha, sem travar' },
-      { id: 'crunch_cabo_pa', nome: 'Crunch ajoelhado no cabo', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
-      { id: 'elev_joelhos_romana', nome: 'Elevação de joelhos (romana, retroversão)', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'leg_press_uni_90', nome: 'Leg press unilateral sentado 90°', series: '2x6-8/perna +1 esq', rir: '1/0', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
+      { id: 'extensora_uni_pa', nome: 'Cadeira extensora unilateral', series: '2x6-8/perna', rir: '1/0', descanso: '90-120s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'agach_smith_pa', nome: 'Agachamento no Smith (âncora)', series: '2x6-8', rir: '2/1', descanso: '2-3min', principal: true, falha: '' },
+      { id: 'flexora_sentada', nome: 'Flexora sentada', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'pant_sent_pa', nome: 'Panturrilha sentada / máquina', series: '2x6-8', rir: '1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'elev_joelhos_romana', nome: 'Elevação de joelhos (romana, retroversão)', series: '2x6-8', rir: '1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
     ]
   },
   segunda:  { nome: 'Push A', titulo: 'Peitoral + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'supino_reto_smith', nome: 'Supino reto no Smith', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
-      { id: 'supino_incl_maq_pa', nome: 'Supino inclinado em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'peck_deck_pa', nome: 'Peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'supino_fechado_smith', nome: 'Supino fechado no Smith', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'desenv_ombros_maquina', nome: 'Desenvolvimento de ombros na máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última à falha, se seguro' },
-      { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'triceps_overhead_corda', nome: 'Extensão de tríceps overhead (corda)', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'mergulho_maquina', nome: 'Mergulho em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'triceps_uni_cruz_pa', nome: 'Tríceps unilateral cruzado no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'supino_reto_halt', nome: 'Supino reto com halteres', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
+      { id: 'fly_uni_cabo', nome: 'Crossover / fly unilateral no cabo', series: '2x6-8/braço +1 esq', rir: '1/0', descanso: '90s', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
+      { id: 'supino_incl_maq_pa', nome: 'Supino inclinado em máquina (âncora)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_uni_polia', nome: 'Tríceps unilateral na polia', series: '2x6-8/braço', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'supino_fechado_smith', nome: 'Supino fechado no Smith', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
     ]
   },
   terca:    { nome: 'Pull A', titulo: 'Largura das costas + bíceps', subtitulo: '', cor: C.blue,
     exercicios: [
-      { id: 'puxada_artic_pa', nome: 'Puxada articulada (máquina/anilhas)', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
-      { id: 'puxada_neutra_pa', nome: 'Puxada alta pegada neutra', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'remada_artic_pa', nome: 'Remada articulada c/ apoio no peito', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
-      { id: 'remada_uni_pa', nome: 'Remada unilateral (máquina/cabo)', series: '2x6-8/lado', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'pullover_maq_pa', nome: 'Pullover em máquina', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'rosca_scott_pa', nome: 'Rosca Scott em máquina', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'rosca_incl_pa', nome: 'Rosca inclinada com halteres', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'rosca_martelo_pa', nome: 'Rosca martelo com halteres', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'puxada_uni_cabo', nome: 'Puxada alta unilateral no cabo', series: '2x6-8/braço +1 esq', rir: '1/0', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
+      { id: 'remada_serrote', nome: 'Remada unilateral com halter (serrote)', series: '2x6-8/braço', rir: '1/0', descanso: '2min', principal: true, falha: 'ESQ 1º · última à falha' },
+      { id: 'puxada_pronada_pb', nome: 'Puxada alta pronada (âncora)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_uni_halter', nome: 'Rosca unilateral com halter', series: '2x6-8/braço', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'rosca_martelo_pa', nome: 'Rosca martelo com halteres', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
     ]
   },
-  quarta:   { nome: 'Pernas B', titulo: 'Posteriores + glúteos + core', subtitulo: 'Core incluído', cor: C.accent,
+  quarta:   { nome: 'Pernas B', titulo: 'Posteriores + glúteos + core', subtitulo: 'Corretiva — lado esquerdo', cor: C.accent,
     exercicios: [
-      { id: 'hip_thrust_pb', nome: 'Hip thrust (máquina/Smith)', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
-      { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '2/1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'flexora_deit_pb', nome: 'Flexora deitada', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'leg_press_uni_90', nome: 'Leg press unilateral sentado 90°', series: '2x6-8/perna', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'coice_gluteo_pb', nome: 'Coice de glúteo em máquina', series: '2x6-8/perna', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'pant_pe_pb', nome: 'Panturrilha em pé na máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última à falha, sem travar' },
-      { id: 'abdominal_maq_pb', nome: 'Abdominal em máquina', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
-      { id: 'ab_wheel_pb', nome: 'Ab wheel', series: '2x6-8', rir: '2/1', descanso: '2min', principal: false, falha: '' },
-      { id: 'pallof_pb', nome: 'Pallof press no cabo (2s de sustentação)', series: '2x6-8/lado', rir: '2/1', descanso: '60-90s', principal: false, falha: '' },
+      { id: 'bulgaro_halt', nome: 'Agachamento búlgaro com halteres', series: '2x6-8/perna +1 esq', rir: '1/0', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
+      { id: 'flexora_deit_uni', nome: 'Flexora deitada unilateral', series: '2x6-8/perna', rir: '1/0', descanso: '90-120s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'hip_thrust_pb', nome: 'Hip thrust (âncora)', series: '2x6-8', rir: '2/1', descanso: '2-3min', principal: true, falha: '' },
+      { id: 'coice_gluteo_pb', nome: 'Coice de glúteo unilateral', series: '2x6-8/perna', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'pant_pe_pb', nome: 'Panturrilha em pé na máquina', series: '2x6-8', rir: '1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'ab_wheel_pb', nome: 'Ab wheel', series: '2x6-8', rir: '2/1', descanso: '60-90s', principal: false, falha: '' },
     ]
   },
   quinta:   { nome: 'Push B', titulo: 'Ombros + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'desenv_ombros_maquina', nome: 'Desenvolvimento de ombros na máquina', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última à falha, se seguro' },
-      { id: 'supino_incl_smith_pb', nome: 'Supino inclinado no Smith (~30°)', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '3x6-8', rir: '2/1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'elev_lat_uni_pb', nome: 'Elevação lateral unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
-      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'supino_conv_pb', nome: 'Supino convergente em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'triceps_overhead_corda', nome: 'Extensão de tríceps overhead (corda)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'triceps_uni_pb', nome: 'Tríceps unilateral na polia', series: '2x6-8/braço', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'mergulho_maquina', nome: 'Mergulho em máquina', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
+      { id: 'desenv_uni', nome: 'Desenvolvimento unilateral (halter/máquina)', series: '2x6-8/braço +1 esq', rir: '1/0', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha (se seguro)' },
+      { id: 'elev_lat_uni_pb', nome: 'Elevação lateral unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'supino_incl_smith_pb', nome: 'Supino inclinado no Smith ~30° (âncora)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'triceps_uni_polia', nome: 'Tríceps unilateral na polia', series: '2x6-8/braço', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
     ]
   },
-  sexta:    { nome: 'Pull B', titulo: 'Espessura das costas + core', subtitulo: 'Core incluído', cor: C.blue,
+  sexta:    { nome: 'Pull B', titulo: 'Espessura das costas + core', subtitulo: 'Corretiva — lado esquerdo', cor: C.blue,
     exercicios: [
-      { id: 'remada_t_pb', nome: 'Remada T c/ apoio no peito', series: '3x6-8', rir: '2/1/0', descanso: '3min', principal: true, falha: 'Última série à falha' },
-      { id: 'remada_uni_pb', nome: 'Remada articulada unilateral (neutra)', series: '3x6-8/braço', rir: '2/1/0', descanso: '2-3min', principal: true, falha: 'Última série à falha' },
-      { id: 'puxada_pronada_pb', nome: 'Puxada alta pronada', series: '2x6-8', rir: '1/0', descanso: '2-3min', principal: false, falha: 'Última série à falha' },
-      { id: 'encolhimento_pb', nome: 'Encolhimento (máquina/Smith)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'rosca_bayesian_pb', nome: 'Rosca Bayesian unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'rosca_martelo_scott_pb', nome: 'Rosca martelo no banco Scott', series: '2x6-8', rir: '1/0', descanso: '2min', principal: false, falha: 'Última série à falha' },
-      { id: 'elev_joelhos_romana', nome: 'Elevação de joelhos (romana, retroversão)', series: '2x6-8', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
-      { id: 'flexao_lat_pb', nome: 'Flexão lateral do tronco no cabo', series: '2x6-8/lado', rir: '1/0', descanso: '90-120s', principal: false, falha: 'Última série à falha' },
+      { id: 'remada_uni_pb', nome: 'Remada unilateral na máquina', series: '2x6-8/braço +1 esq', rir: '1/0', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
+      { id: 'remada_t_pb', nome: 'Remada T c/ apoio no peito (âncora)', series: '2x6-8', rir: '1/0', descanso: '2min', principal: true, falha: 'Última série à falha' },
+      { id: 'encolhimento_pb', nome: 'Encolhimento com halteres', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'crucifixo_inv_peckdeck', nome: 'Crucifixo inverso no peck deck', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'rosca_bayesian_pb', nome: 'Rosca Bayesian unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '90s', principal: false, falha: 'ESQ 1º · última à falha' },
+      { id: 'pallof_pb', nome: 'Pallof press no cabo (2s de sustentação)', series: '2x6-8/lado', rir: '2/1', descanso: '60s', principal: false, falha: 'ESQ 1º' },
     ]
   },
   sabado:   { nome: '—', titulo: 'Descanso completo', subtitulo: 'Sem musculação ou aeróbico', cor: C.muted,
@@ -99,7 +79,7 @@ const SPLIT = {
 
 const DIAS_KEY = ['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
 const DIAS_LABEL = { domingo:'Dom',segunda:'Seg',terca:'Ter',quarta:'Qua',quinta:'Qui',sexta:'Sex',sabado:'Sáb' };
-const COMPOSTOS = ['agach_smith_pa','leg_press_uni_90','supino_reto_smith','puxada_artic_pa','remada_artic_pa','hip_thrust_pb','desenv_ombros_maquina','remada_t_pb','remada_uni_pb'];
+const COMPOSTOS = ['leg_press_uni_90','agach_smith_pa','supino_reto_halt','puxada_uni_cabo','remada_serrote','bulgaro_halt','hip_thrust_pb','desenv_uni','remada_uni_pb','remada_t_pb'];
 
 const HISTORICO_PESO_INICIAL = [
   {data:"2026-01-05",peso:"99.2",gordura:"32.3",muscular:"63.79",visceral:"15.9",agua:"48.9",tmb:"1820",fonte:"relax"},
@@ -116,8 +96,8 @@ const HISTORICO_PESO_INICIAL = [
   {data:"2026-06-27",peso:"76.8",gordura:"13.8",muscular:"38.1",visceral:"4",agua:"48.7",tmb:"1800",fonte:"inbody"},
 ];
 
-const CICLO_INICIO = new Date('2026-08-23');
-const CICLO_SEMANAS = 13;
+const CICLO_INICIO = new Date('2026-10-14');
+const CICLO_SEMANAS = 8;
 
 const dateKey = (d = new Date()) => {
   const year = d.getFullYear();
