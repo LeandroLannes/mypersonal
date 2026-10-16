@@ -19,7 +19,7 @@ const SPLIT = {
       { id: 'extensora_bil', nome: 'Cadeira extensora', series: '3x6-8', rir: '1/1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '1/1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'adutora_pa', nome: 'Máquina adutora', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
-      { id: 'pant_sent_pa', nome: 'Panturrilha sentada / máquina', series: '4x6-8', rir: '1/1/1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'pant_sent_pa', nome: 'Panturrilha sentada / máquina', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
       { id: 'crunch_cabo_pa', nome: 'Crunch ajoelhado no cabo', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
     ]
   },
@@ -50,7 +50,7 @@ const SPLIT = {
       { id: 'terra_romeno', nome: 'Stiff / terra romeno', series: '3x6-8', rir: '2/2/1', descanso: '2-3min', principal: true, falha: 'Sem falha' },
       { id: 'flexora_sentada', nome: 'Flexora sentada', series: '3x6-8', rir: '1/1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'abdutora_pa', nome: 'Máquina abdutora', series: '2x6-8', rir: '1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
-      { id: 'pant_pe_pb', nome: 'Panturrilha em pé na máquina', series: '4x6-8', rir: '1/1/1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
+      { id: 'pant_pe_pb', nome: 'Panturrilha em pé na máquina', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última à falha, sem travar' },
       { id: 'abdominal_maq_pb', nome: 'Abdominal em máquina', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
     ]
   },
@@ -72,7 +72,7 @@ const SPLIT = {
       { id: 'remada_t_pb', nome: 'Remada T c/ apoio no peito (âncora)', series: '3x6-8', rir: '2/1/1', descanso: '2-3min', principal: true, falha: '' },
       { id: 'elev_lat_halt', nome: 'Elevação lateral com halteres', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
       { id: 'crucifixo_inv_cross', nome: 'Crucifixo inverso no cross (cabos cruzados)', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
-      { id: 'encolhimento_pb', nome: 'Encolhimento com halteres', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'encolhimento_pb', nome: 'Encolhimento no Smith', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'rosca_bayesian_pb', nome: 'Rosca Bayesian unilateral no cabo', series: '2x6-8/braço', rir: '1/0', descanso: '60-90s', principal: false, falha: 'ESQ 1º · última à falha' },
       { id: 'rosca_martelo_scott_pb', nome: 'Rosca martelo no banco Scott', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'pallof_pb', nome: 'Pallof press no cabo (2s de sustentação)', series: '2x6-8/lado', rir: '2/1', descanso: '60s', principal: false, falha: 'ESQ 1º' },
