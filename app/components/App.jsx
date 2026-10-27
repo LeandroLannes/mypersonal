@@ -25,7 +25,7 @@ const SPLIT = {
   },
   segunda:  { nome: 'Push A', titulo: 'Peitoral + ombro + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'supino_reto_halt', nome: 'Supino reto com halteres (âncora)', series: '3x6-8', rir: '2/1/1', descanso: '3min', principal: true, falha: '' },
+      { id: 'supino_reto_maq_uni', nome: 'Supino reto em máquina unilateral (âncora)', series: '3x6-8', rir: '2/1/1', descanso: '3min', principal: true, falha: 'Braços juntos, cada lado no seu peso' },
       { id: 'fly_uni_cabo', nome: 'Crossover / fly unilateral no cabo', series: '2x6-8/braço +1 esq', rir: '1/0', descanso: '90s', principal: true, falha: 'ESQ 1º · +1 série só esq · última à falha' },
       { id: 'supino_incl_maq_pa', nome: 'Supino inclinado em máquina', series: '3x6-8', rir: '2/1/1', descanso: '2min', principal: false, falha: '' },
       { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
@@ -37,8 +37,8 @@ const SPLIT = {
     exercicios: [
       { id: 'puxada_uni_cabo', nome: 'Puxada alta unilateral no cabo', series: '3x6-8/braço +1 esq', rir: '2/1/1', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq (RIR 1)' },
       { id: 'puxada_pronada_pb', nome: 'Puxada alta pronada (âncora)', series: '3x6-8', rir: '2/1/1', descanso: '2-3min', principal: true, falha: '' },
-      { id: 'remada_serrote', nome: 'Remada unilateral com halter (serrote)', series: '3x6-8/braço', rir: '2/1/1', descanso: '2min', principal: false, falha: 'ESQ 1º' },
-      { id: 'pullover_maq_pa', nome: 'Pullover em máquina', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
+      { id: 'remada_uni_cabo', nome: 'Remada unilateral na polia baixa (cabo)', series: '3x6-8/braço', rir: '2/1/1', descanso: '2min', principal: false, falha: 'ESQ 1º' },
+      { id: 'pulldown_ext', nome: 'Pulldown com braços estendidos no cabo', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'rosca_scott_pa', nome: 'Rosca Scott em máquina', series: '3x6-8', rir: '1/1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
       { id: 'rosca_incl_pa', nome: 'Rosca inclinada com halteres', series: '2x6-8', rir: '1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
     ]
@@ -87,7 +87,7 @@ const SPLIT = {
 
 const DIAS_KEY = ['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
 const DIAS_LABEL = { domingo:'Dom',segunda:'Seg',terca:'Ter',quarta:'Qua',quinta:'Qui',sexta:'Sex',sabado:'Sáb' };
-const COMPOSTOS = ['leg_press_uni_90','agach_smith_pa','supino_reto_halt','supino_incl_smith_pb','puxada_uni_cabo','puxada_pronada_pb','bulgaro_halt','hip_thrust_pb','terra_romeno','desenv_uni','remada_uni_pb','remada_t_pb'];
+const COMPOSTOS = ['leg_press_uni_90','agach_smith_pa','supino_reto_maq_uni','supino_incl_smith_pb','puxada_uni_cabo','puxada_pronada_pb','bulgaro_halt','hip_thrust_pb','terra_romeno','desenv_uni','remada_uni_pb','remada_t_pb'];
 
 const HISTORICO_PESO_INICIAL = [
   {data:"2026-01-05",peso:"99.2",gordura:"32.3",muscular:"63.79",visceral:"15.9",agua:"48.9",tmb:"1820",fonte:"relax"},
