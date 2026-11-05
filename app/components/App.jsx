@@ -56,7 +56,7 @@ const SPLIT = {
   },
   quinta:   { nome: 'Push B', titulo: 'Ombros + peito + tríceps', subtitulo: '', cor: C.orange,
     exercicios: [
-      { id: 'desenv_uni', nome: 'Desenvolvimento unilateral (halter/máquina)', series: '3x6-8/braço +1 esq', rir: '2/1/1', descanso: '2-3min', principal: true, falha: 'ESQ 1º · +1 série só esq (RIR 1)' },
+      { id: 'desenv_maq_uni', nome: 'Desenvolvimento em máquina unilateral', series: '3x6-8 +1 esq', rir: '2/1/1', descanso: '2-3min', principal: true, falha: 'Braços juntos, cada lado no seu peso · +1 série só esq (RIR 1)' },
       { id: 'supino_incl_smith_pb', nome: 'Supino inclinado no Smith ~30°', series: '3x6-8', rir: '2/1/1', descanso: '2-3min', principal: true, falha: '' },
       { id: 'elev_lat_maquina', nome: 'Elevação lateral na máquina', series: '3x6-8', rir: '1/1/0', descanso: '60-90s', principal: false, falha: 'Última série à falha' },
       { id: 'peck_deck_pa', nome: 'Peck deck', series: '3x6-8', rir: '1/1/0', descanso: '90s', principal: false, falha: 'Última série à falha' },
@@ -87,7 +87,7 @@ const SPLIT = {
 
 const DIAS_KEY = ['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
 const DIAS_LABEL = { domingo:'Dom',segunda:'Seg',terca:'Ter',quarta:'Qua',quinta:'Qui',sexta:'Sex',sabado:'Sáb' };
-const COMPOSTOS = ['leg_press_uni_90','agach_smith_pa','supino_reto_maq_uni','supino_incl_smith_pb','puxada_uni_cabo','puxada_pronada_pb','bulgaro_halt','hip_thrust_pb','terra_romeno','desenv_uni','remada_uni_pb','remada_t_pb'];
+const COMPOSTOS = ['leg_press_uni_90','agach_smith_pa','supino_reto_maq_uni','supino_incl_smith_pb','puxada_uni_cabo','puxada_pronada_pb','bulgaro_halt','hip_thrust_pb','terra_romeno','desenv_maq_uni','remada_uni_pb','remada_t_pb'];
 
 const HISTORICO_PESO_INICIAL = [
   {data:"2026-01-05",peso:"99.2",gordura:"32.3",muscular:"63.79",visceral:"15.9",agua:"48.9",tmb:"1820",fonte:"relax"},
