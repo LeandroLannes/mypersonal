@@ -586,7 +586,7 @@ function TelaHoje({ treino, diaKey, regKey, regHoje, registros, salvarRegistro, 
                     {feito && <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><polyline points="2,6.5 5,9.5 11,3" stroke="#18181B" strokeWidth="2.5" strokeLinecap="round"/></svg>}
                   </button>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, margin: 0, color: feito ? C.muted : C.text, textDecoration: feito ? 'line-through' : 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i+1}. {e.nome}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, margin: 0, color: feito ? C.muted : C.text, textDecoration: feito ? 'line-through' : 'none', lineHeight: 1.3, overflowWrap: 'anywhere' }}>{i+1}. {e.nome}</p>
                     <p style={{ fontSize: 11, color: C.muted, margin: '2px 0 0' }}>{e.series} · RIR {e.rir}</p>
                     {e.falha && <p style={{ fontSize: 10, color: C.orange, fontWeight: 700, margin: '2px 0 0' }}>⚡ {e.falha}</p>}
                   </div>
